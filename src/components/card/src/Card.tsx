@@ -5,7 +5,8 @@ import {
   createKey,
   resolveWrappedSlot,
 } from "naive-ui/es/_utils";
-import { useVdConfig, useVdTheme } from "@/components/_mixins";
+import { useConfig } from "naive-ui/es/_mixins";
+import { useVdConfig, useVdTheme, useVdThemeClass } from "@/components/_mixins";
 import type { VdThemeProps } from "@/components/_mixins";
 import { cardLight } from "../styles";
 import type { CardTheme } from "../styles";
@@ -45,6 +46,7 @@ export default defineComponent({
   props: cardProps,
   setup(props) {
     const { mergedClsPrefixRef } = useVdConfig(props);
+    const { inlineThemeDisabled } = useConfig(props);
     const themeRef = useVdTheme(
       "Card",
       "-card",
@@ -100,10 +102,22 @@ export default defineComponent({
         "--vd-close-border-radius": closeBorderRadius,
       };
     });
+    const themeClassHandle = inlineThemeDisabled
+      ? useVdThemeClass(
+        'card',
+        computed(() => {
+          return props.size[0]
+        }),
+        cssVarsRef,
+        props
+      )
+      : undefined
     return {
       mergedClsPrefix: mergedClsPrefixRef,
       mergedTheme: themeRef,
-      cssVars: cssVarsRef,
+      cssVars: inlineThemeDisabled ? undefined : cssVarsRef,
+      themeClass: themeClassHandle?.themeClass,
+      onRender: themeClassHandle?.onRender
     };
   },
   render() {
@@ -113,11 +127,14 @@ export default defineComponent({
       mergedClsPrefix,
       tag: Component,
       $slots,
+      onRender,
     } = this;
+    onRender?.()
     return (
       <Component
         class={[
           `${mergedClsPrefix}-card`,
+          this.themeClass,
           {
             [`${mergedClsPrefix}-card--bordered`]: bordered,
             [`${mergedClsPrefix}-card--hoverable`]: hoverable,

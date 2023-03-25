@@ -5,6 +5,7 @@ import {
   GlobalThemeOverrides,
   NConfigProvider,
   NButton,
+  NCard,
 } from "naive-ui";
 import {
   VdGlobalThemeOverrides,
@@ -40,12 +41,12 @@ function switchTheme() {
 <template>
   <div class="main">
     <n-button @click="switchTheme">切换主题</n-button>
-    <n-config-provider class="content" :theme="theme">
-      <vd-card title="卡片">
+    <n-config-provider class="content" :theme="theme" inline-theme-disabled>
+      <n-card title="卡片">
         <vd-config-provider :theme-overrides="vdThemeOverrides">
           <vd-card title="卡片"> 卡片内容 </vd-card>
         </vd-config-provider>
-      </vd-card>
+      </n-card>
     </n-config-provider>
   </div>
 </template>
