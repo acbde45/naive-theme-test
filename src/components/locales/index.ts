@@ -1,1 +1,0 @@
-export type { VdLocale } from "./common/enUS";
